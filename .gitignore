@@ -4,3 +4,4 @@
 *.o
 *.symvers
 modules.order
+client
