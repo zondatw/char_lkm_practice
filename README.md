@@ -21,6 +21,17 @@ $ sudo dmesg  | grep CHARLKM
 [37348.419235] [CHARLKM] Current major number: 511
 [37348.419280] [CHARLKM] Device class registered
 [37348.419379] [CHARLKM] Device registered
+$ modinfo charlkm.ko
+filename:       /home/zonda/Projects/lkm/charlkm/charlkm.ko
+version:        0.1
+description:    Simple character device driver for LKM
+author:         Zonda Yang
+license:        GPL
+srcversion:     BDC7518A0BD180D5C604E85
+depends:
+retpoline:      Y
+name:           charlkm
+vermagic:       5.17.0-1-MANJARO SMP preempt mod_unload
 ```
 
 ### Remove
