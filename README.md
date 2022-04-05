@@ -50,3 +50,4 @@ $ sudo dmesg  | grep CHARLKM
 ## Reference
 
 [Writing a Linux Kernel Module — Part 2: A Character Device](http://derekmolloy.ie/writing-a-linux-kernel-module-part-2-a-character-device/)
+[Crash when trying to access const char* buffer](https://stackoverflow.com/questions/45978645/crash-when-trying-to-access-const-char-buffer)

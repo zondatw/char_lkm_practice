@@ -2,6 +2,7 @@
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/kernel.h>
+#include <linux/slab.h>
 #include <linux/fs.h>
 #include <linux/uaccess.h>
 #define DEVICE_NAME "charlkm"
@@ -109,9 +110,22 @@ static ssize_t device_read(struct file* fliep, char* buffer, size_t len, loff_t*
 
 static ssize_t device_write(struct file* fliep, const char* buffer, size_t len, loff_t* offset)
 {
-    snprintf(message, MSG_SIZE, "%s(%zu letters)", buffer, len);
+    char *buf_internal;
+
+    buf_internal = kmalloc(len, GFP_KERNEL);
+    if (buf_internal == NULL) {
+        return -ENOMEM;
+    }
+
+    if (copy_from_user(buf_internal, buffer, len)) {
+        kfree(buf_internal);
+        return -EFAULT;
+    }
+
+    snprintf(message, MSG_SIZE, "%s(%zu letters)", buf_internal, len);
     messageSize = strlen(message);
     printk(KERN_INFO LOG_TITLE "Received %zu characters from the user\n", len);
+    kfree(buf_internal);
     return len;
 }
 
