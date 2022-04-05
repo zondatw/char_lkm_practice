@@ -82,7 +82,7 @@ static void __exit charlkm_exit(void)
 static int device_open(struct inode* inodep, struct file* fliep)
 {
     OpenNumbers++;
-    printk(KERN_INFO LOG_TITLE "Device has been opened %s times\n", OpenNumbers);
+    printk(KERN_INFO LOG_TITLE "Device has been opened %d times\n", OpenNumbers);
     return 0;
 }
 
