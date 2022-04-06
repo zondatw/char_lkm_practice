@@ -58,6 +58,16 @@ $ sudo dmesg  | grep CHARLKM
 [54444.368129] [CHARLKM] Device closed
 ```
 
+### let execute Client without sudo
+
+```shell
+$ sudo cp 99-charlkm.rules /etc/udev/rules.d/.
+$ sudo insmod charlkm.ko
+# check permission
+$ ls -l /dev/charlkm
+crw-rw-rw- 1 root root 511, 0  4月  6 21:53 /dev/charlkm
+```
+
 ### Remove
 
 ```shell
