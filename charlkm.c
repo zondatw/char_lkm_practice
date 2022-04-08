@@ -5,11 +5,15 @@
 #include <linux/slab.h>
 #include <linux/fs.h>
 #include <linux/uaccess.h>
+#include <linux/mutex.h>
+
 #define DEVICE_NAME "charlkm"
 #define CLASS_NAME "charlkm_cls"
 
 #define LOG_TITLE "[CHARLKM] "
 #define MSG_SIZE 256
+
+static DEFINE_MUTEX(charlkm_mutex);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Zonda Yang");
@@ -68,11 +72,13 @@ static int __init charlkm_init(void)
         return PTR_ERR(charlkmDevice);
     }
     printk(KERN_INFO LOG_TITLE "Device registered\n");
+    mutex_init(&charlkm_mutex);
     return 0;
 }
 
 static void __exit charlkm_exit(void)
 {
+    mutex_destroy(&charlkm_mutex);
     device_destroy(charlkmClass, MKDEV(majorNumber, 0));
     class_unregister(charlkmClass);
     class_destroy(charlkmClass);
@@ -82,6 +88,10 @@ static void __exit charlkm_exit(void)
 
 static int device_open(struct inode* inodep, struct file* fliep)
 {
+    if (!mutex_trylock(&charlkm_mutex)) {
+        printk(KERN_ALERT LOG_TITLE "Device in use by another process\n");
+        return -EBUSY;
+    }
     OpenNumbers++;
     printk(KERN_INFO LOG_TITLE "Device has been opened %d times\n", OpenNumbers);
     return 0;
@@ -89,6 +99,7 @@ static int device_open(struct inode* inodep, struct file* fliep)
 
 static int device_release(struct inode* inodep, struct file* fliep)
 {
+    mutex_unlock(&charlkm_mutex);
     printk(KERN_INFO LOG_TITLE "Device closed\n");
     return 0;
 }
